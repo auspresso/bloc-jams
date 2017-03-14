@@ -1,4 +1,5 @@
- var albumPicasso = {
+// Album 1 
+var albumPicasso = {
      title: 'The Colors',
      artist: 'Pablo Picasso',
      label: 'Cubism',
@@ -13,6 +14,7 @@
      ]
  };
 
+// Album 2
 var albumMarconi = {
      title: 'The Telephone',
      artist: 'Guglielmo Marconi',
@@ -28,10 +30,31 @@ var albumMarconi = {
      ]
  };
 
- var createSongRow = function(songNumber, songName, songLength) {
+// Album 3
+var albumTimberTimbre = {
+     title: 'Hot Dreams',
+     artist: 'Timber Timbre',
+     label: 'Arts & Crafts Profuctions Inc.',
+     year: '2014',
+     albumArtUrl: 'assets/images/album_covers/22.jpg',
+     songs: [
+         { title: 'Beat the Drum Slowly', duration: '5:29' },
+         { title: 'Hot Dreams', duration: '4:53' },
+         { title: 'Curtains!?', duration: '3:44'},
+         { title: 'Bring Me Simple Men', duration: '3:50' },
+         { title: 'Resurrection Drive Part II', duration: '2:11'},
+         { title: 'Grand Canyon', duration: '4:38'},
+         { title: 'This Low Commotion', duration: '5:06'},
+         { title: 'The New Tomorrow', duration: '4:04'},
+         { title: 'Run from Me', duration: '4:17'},
+         { title: 'The Three Sisters', duration: '5:51'}
+     ]
+ };
+
+  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
-      + '  <td class="song-item-number">' + songNumber + '</td>'
+     + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
       + '  <td class="song-item-title">' + songName + '</td>'
       + '  <td class="song-item-duration">' + songLength + '</td>'
       + '</tr>'
@@ -40,14 +63,14 @@ var albumMarconi = {
      return template;
  };
 
- var setCurrentAlbum = function(album) {
      // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
-     var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-     var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-     var albumImage = document.getElementsByClassName('album-cover-art')[0];
-     var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
- 
+var albumTitle = document.getElementsByClassName('album-view-title')[0];
+var albumArtist = document.getElementsByClassName('album-view-artist')[0];
+var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
+var albumImage = document.getElementsByClassName('album-cover-art')[0];
+var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+
+ var setCurrentAlbum = function(album) {
      // #2
      albumTitle.firstChild.nodeValue = album.title;
      albumArtist.firstChild.nodeValue = album.artist;
@@ -62,7 +85,39 @@ var albumMarconi = {
          albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
      }
  };
- 
+
+ var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
+ var songRows = document.getElementsByClassName('album-view-song-item');
+
+
+ var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
+
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
+     
+     songListContainer.addEventListener('mouseover', function(event) {
+
+     console.log(event.target);
+     if (event.target.parentElement.className === 'album-view-song-item') {
+      event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
+
+         }
+     });
+     
+     for (var i = 0; i < songRows.length; i++) {
+     songRows[i].addEventListener('mouseleave', function(event) {
+     this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
+
+         });
+     }
+     
+     var albums = [albumPicasso, albumMarconi, albumTimberTimbre];
+     var index = 1;
+     albumImage.addEventListener("click", function(event) {
+         setCurrentAlbum(albums[index]);
+         index++;
+         if (index == albums.length) {
+             index = 0;
+        }
+     });
  };
